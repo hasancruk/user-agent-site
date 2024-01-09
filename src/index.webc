@@ -1,6 +1,58 @@
 ---
 layout: layouts/base.webc
 ---
+<script webc:bucket="defer">
+  const UA = window.navigator.userAgent;
+  const userAgentElement = document.querySelector("[data-user-agent]");
+  userAgentElement.textContent = UA;
+  
+  const touchDeviceElement = document.querySelector("[data-touch-device]");
+  touchDeviceElement.textContent = isTouchDevice() ? "Yes" : "No";
+  
+  const renderingEngineElement = document.querySelector("[data-rendering-engine]");
+  renderingEngineElement.textContent = window.navigator.product;
+  
+  const platformElement = document.querySelector("[data-platform]");
+  platformElement.textContent = window.navigator.platform ?? "Mobile";
+
+  const cpuElement = document.querySelector("[data-cpu]");
+  cpuElement.textContent = window.navigator.oscpu ?? "Mobile";
+
+  /** 
+    * Source: https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_device_detection
+    * Returns {boolean}
+    */
+  function isTouchDevice() {
+    let hasTouchScreen = false;
+    if ("maxTouchPoints" in navigator) {
+      hasTouchScreen = navigator.maxTouchPoints > 0;
+    } else if ("msMaxTouchPoints" in navigator) {
+      hasTouchScreen = navigator.msMaxTouchPoints > 0;
+    } else {
+      const mQ = matchMedia?.("(pointer:coarse)");
+      if (mQ?.media === "(pointer:coarse)") {
+        hasTouchScreen = !!mQ.matches;
+      } else if ("orientation" in window) {
+        hasTouchScreen = true; // deprecated, but good fallback
+      } else {
+        // Only as a last resort, fall back to user agent sniffing
+        const UA = navigator.userAgent;
+        hasTouchScreen =
+          /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+          /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+      }
+    }
+
+    return hasTouchScreen;
+  }
+</script>
+
+<h1>User Device Test Site</h1>
 <section>
-  Hello
+  <h2>Device details</h2>
+  <p>User agent: <span data-user-agent></span></p>
+  <p>Is touchscreen or mobile device? <span data-touch-device></span></p>
+  <p>Platform: <span data-platform></span></p>
+  <p>CPU: <span data-cpu></span></p>
+  <p>Rendering engine: <span data-rendering-engine></span></p>
 </section>

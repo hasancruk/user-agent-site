@@ -11,5 +11,6 @@
   </head>
   <body>
     <main @html="this.content"></main>
+    <script @raw="getBundle('js', 'defer')" webc:keep></script>
   </body>
 </html>
