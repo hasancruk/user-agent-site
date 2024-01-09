@@ -1,6 +1,0 @@
----
-layout: layouts/base.webc
----
-<section>
-  Hello
-</section>
